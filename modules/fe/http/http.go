@@ -25,7 +25,7 @@ func Start() {
 	uic.ConfigRoutes()
 	dashboard.ConfigRoutes()
 	portal.ConfigRoutes()
-
+	MyRoutesing()
 	beego.AddFuncMap("member", uic_model.MembersByTeamId)
 	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
 		AllowAllOrigins: true,
