@@ -75,6 +75,7 @@ func echo(w http.ResponseWriter, r *http.Request) (err error) {
 
 func (this *ScoketController) WebScoket() {
 	echo(this.Ctx.ResponseWriter, this.Ctx.Request)
+	this.Redirect("/", 400)
 }
 
 func (this *ScoketController) TestInd() {
