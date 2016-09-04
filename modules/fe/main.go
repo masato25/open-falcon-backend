@@ -29,8 +29,8 @@ func main() {
 	}
 
 	// parse config
-	vipercfg.Load()
-	if err := g.ParseConfig(vipercfg.Config().GetString("config")); err != nil {
+	// vipercfg.Load()
+	if err := g.ParseConfig("", true); err != nil {
 		log.Fatalln(err)
 	}
 	logruslog.Init()

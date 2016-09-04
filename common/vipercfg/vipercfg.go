@@ -19,6 +19,7 @@ func Load() {
 
 func Parse() {
 	pflag.StringP("config", "c", "cfg.json", "configuration file")
+	pflag.StringP("confenv", "e", "", "configuration from etcd by key")
 	pflag.BoolP("version", "v", false, "show version")
 	pflag.Bool("check", false, "check collector")
 	pflag.BoolP("help", "h", false, "usage")
@@ -28,6 +29,7 @@ func Parse() {
 
 func Bind() {
 	v.BindPFlag("config", pflag.Lookup("config"))
+	v.BindPFlag("ConfEnv", pflag.Lookup("confenv"))
 	v.BindPFlag("version", pflag.Lookup("version"))
 	v.BindPFlag("check", pflag.Lookup("check"))
 	v.BindPFlag("help", pflag.Lookup("help"))

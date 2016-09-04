@@ -131,20 +131,28 @@ func Config() *GlobalConfig {
 	return config
 }
 
-func ParseConfig(cfg string) error {
-	if cfg == "" {
-		return fmt.Errorf("use -c to specify configuration file")
-	}
+func ParseConfig(cfg string, etcd bool) (err error) {
 
-	if !file.IsExist(cfg) {
-		return fmt.Errorf("config file %s is nonexistent", cfg)
-	}
+	var configContent string
+	if etcd {
+		configContent, err = GetConf()
+		if configContent == "" {
+			log.Fatalf("can not get key by etcd, please check your etcd server and the error from etcd clinet: %v", err.Error())
+		}
+	} else {
+		if cfg == "" {
+			return fmt.Errorf("use -c to specify configuration file")
+		}
+		if !file.IsExist(cfg) {
+			return fmt.Errorf("config file %s is nonexistent", cfg)
+		}
 
-	ConfigFile = cfg
+		ConfigFile = cfg
 
-	configContent, err := file.ToTrimString(cfg)
-	if err != nil {
-		return fmt.Errorf("read config file %s fail %s", cfg, err)
+		configContent, err = file.ToTrimString(cfg)
+		if err != nil {
+			return fmt.Errorf("read config file %s fail %s", cfg, err)
+		}
 	}
 
 	var c GlobalConfig
