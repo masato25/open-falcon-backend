@@ -38,6 +38,7 @@ func ConfigRoutes() {
 		beego.NSRouter("/whentempleteunbind", &PortalController{}, "get:WhenTempleteUnbind;post:WhenTempleteUnbind"),
 		beego.NSRouter("/whenendpointunbind", &PortalController{}, "get:WhenEndpointUnbind;post:WhenEndpointUnbind"),
 		beego.NSRouter("/whenendpointonmaintain", &PortalController{}, "get:WhenEndpointOnMaintain;post:WhenEndpointOnMaintain"),
+		beego.NSRouter("/ignoredrecovercond", &PortalController{}, "get:IgnoredAlertTimeOutRecover"),
 	)
 
 	beego.AddNamespace(portal)

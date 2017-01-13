@@ -107,3 +107,15 @@ func (this *PortalController) WhenEndpointOnMaintain() {
 	this.ServeApiJson(baseResp)
 	return
 }
+
+func (this *PortalController) IgnoredAlertTimeOutRecover() {
+	baseResp := this.BasicRespGen()
+	affectRow, err := events.IgnoredAlertTiemOutRecover()
+	if err != nil {
+		this.ResposeError(baseResp, err.Error())
+		return
+	}
+	baseResp.Data["affectedRows"] = affectRow
+	this.ServeApiJson(baseResp)
+	return
+}

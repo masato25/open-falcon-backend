@@ -109,22 +109,23 @@ type MqConfig struct {
 }
 
 type GlobalConfig struct {
-	Log          string              `json:"log"`
-	Company      string              `json:"company"`
-	Cache        *CacheConfig        `json:"cache"`
-	Http         *HttpConfig         `json:"http"`
-	Salt         string              `json:"salt"`
-	CanRegister  bool                `json:"canRegister"`
-	Ldap         *LdapConfig         `json:"ldap"`
-	Uic          *UicConfig          `json:"uic"`
-	GraphDB      *GraphDBConfig      `json:"graphdb"`
-	BossDB       *BossConfig         `json:"boss"`
-	FalconPortal *FalconPortalConfig `json:"falcon_portal"`
-	Shortcut     *ShortcutConfig     `json:"shortcut"`
-	Api          *ApiConfig          `json:"api"`
-	Graph        *GraphConfig        `json:"graph"`
-	Grpc         *GrpcConfig         `json:"grpc"`
-	Mq           *MqConfig           `json:"mq"`
+	Log                string              `json:"log"`
+	Company            string              `json:"company"`
+	Cache              *CacheConfig        `json:"cache"`
+	Http               *HttpConfig         `json:"http"`
+	Salt               string              `json:"salt"`
+	CanRegister        bool                `json:"canRegister"`
+	Ldap               *LdapConfig         `json:"ldap"`
+	Uic                *UicConfig          `json:"uic"`
+	GraphDB            *GraphDBConfig      `json:"graphdb"`
+	BossDB             *BossConfig         `json:"boss"`
+	FalconPortal       *FalconPortalConfig `json:"falcon_portal"`
+	Shortcut           *ShortcutConfig     `json:"shortcut"`
+	Api                *ApiConfig          `json:"api"`
+	Graph              *GraphConfig        `json:"graph"`
+	Grpc               *GrpcConfig         `json:"grpc"`
+	Mq                 *MqConfig           `json:"mq"`
+	IgnoredResetTimout int64               `json:"ignored_result_timeout"`
 }
 
 var (
