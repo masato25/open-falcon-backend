@@ -2,11 +2,13 @@ package main
 
 import (
 	"fmt"
-	"github.com/Cepave/open-falcon-backend/common/logruslog"
-	"github.com/Cepave/open-falcon-backend/common/vipercfg"
 	"os"
 
+	"github.com/Cepave/open-falcon-backend/common/logruslog"
+	"github.com/Cepave/open-falcon-backend/common/vipercfg"
+
 	"github.com/Cepave/open-falcon-backend/modules/task/collector"
+	"github.com/Cepave/open-falcon-backend/modules/task/crond"
 	"github.com/Cepave/open-falcon-backend/modules/task/g"
 	"github.com/Cepave/open-falcon-backend/modules/task/http"
 	"github.com/Cepave/open-falcon-backend/modules/task/index"
@@ -41,5 +43,9 @@ func main() {
 	// http
 	http.Start()
 
+	// crond
+	if g.Config().EnableCrond {
+		crond.Start()
+	}
 	select {}
 }

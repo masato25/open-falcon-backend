@@ -68,7 +68,7 @@ curl -s "127.0.0.1:8002/health"
                 "test.hostname02:6071" : "0 30 0 ? * 0-5",  //周0-5,每天的00:30:00,开始执行索引全量更新
             }
         - autoDelete: true|false, 是否自动删除垃圾索引。默认为false
-        
+
     collector
         - enable: true/false, 表示是否开启falcon的自身状态采集任务
         - destUrl: 监控数据的push地址,默认为本机的1988接口
@@ -91,3 +91,13 @@ curl -s "127.0.0.1:8002/health"
 1.进行一次索引数据的全量更新。方法为: 针对每个graph实例，运行```curl -s "127.0.0.1:6071/index/updateAll"```，异步地触发graph实例的索引全量更新(这里假设graph的http监听端口为6071)，等待所有的graph实例完成索引全量更新后 进行第2步操作。单个graph实例，索引全量更新的耗时，因counter数量、mysql数据库性能而不同，一般耗时不大于30min。   
 
 2.待索引全量更新完成后，发起过期索引删除 ``` curl -s "$Hostname.Of.Task:$Http.Port/index/delete" ```。运行索引删除前，请务必**确保索引全量更新已完成**。
+
+## Cepave Custom
+### 支援周期性开启某串网址执行callback
+
+修改cfg.json, 在ping urls 加入周期性需要开启callback的url 还有执行期间([*注](https://github.com/bamzi/jobrunner))
+```
+"ping_urls": [
+  {"interval": "@every 10m", "url": "http://localhost:10080/api/v1/alarmadjust/ignoredrecovercond"}
+]
+```

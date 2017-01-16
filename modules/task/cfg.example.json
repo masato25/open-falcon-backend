@@ -23,5 +23,9 @@
             "graph,test.hostname:6071",
             "task,test.hostname:8001"
         ]
-    }
+    },
+    "enableCrond": true,
+    "ping_urls": [
+      {"interval": "@every 10m", "url": "http://localhost:10080/api/v1/alarmadjust/ignoredrecovercond"}
+    ]
 }

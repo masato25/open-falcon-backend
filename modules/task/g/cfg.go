@@ -2,8 +2,9 @@ package g
 
 import (
 	"encoding/json"
-	log "github.com/Sirupsen/logrus"
 	"sync"
+
+	log "github.com/Sirupsen/logrus"
 
 	"github.com/toolkits/file"
 )
@@ -48,12 +49,19 @@ type AgentConfig struct {
 	Cleaner *CleanerConfig `json:"cleaner"`
 }
 
+type PingUrl struct {
+	Interval string `json:"interval"`
+	URL      string `json:"url"`
+}
+
 type GlobalConfig struct {
-	Debug     bool             `json:"debug"`
-	Http      *HttpConfig      `json:"http"`
-	Index     *IndexConfig     `json:"index"`
-	Collector *CollectorConfig `json:"collector"`
-	Agent     *AgentConfig     `json:"agent"`
+	Debug       bool             `json:"debug"`
+	Http        *HttpConfig      `json:"http"`
+	Index       *IndexConfig     `json:"index"`
+	Collector   *CollectorConfig `json:"collector"`
+	Agent       *AgentConfig     `json:"agent"`
+	EnableCrond bool             `json:"enableCrond"`
+	PingUrls    []PingUrl        `json:"ping_urls"`
 }
 
 var (
