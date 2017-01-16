@@ -46,6 +46,7 @@ func AddNote(username string, processNote string, eventcaseid string, processSta
 			sqlbase = fmt.Sprintf("%s, status = '%s'", sqlbase, processStatus)
 		}
 		var processNoteID int
+		q.Begin()
 		q.Raw(fmt.Sprintf("Insert INTO event_note %s, timestamp = ? ;", sqlbase), time.Now().Format(timeLayout)).Exec()
 		err = q.Raw("SELECT LAST_INSERT_ID()").QueryRow(&processNoteID)
 		if processNoteID != 0 && processStatus == "in progress" && err == nil {
@@ -55,6 +56,7 @@ func AddNote(username string, processNote string, eventcaseid string, processSta
 			//update note status & add closed_at to event_cases
 			_, err = q.Raw(fmt.Sprintf("Update event_cases SET process_note = %v, process_status = '%v', closed_at = FROM_UNIXTIME(%v) WHERE id = '%v'", processNoteID, processStatus, time.Now().Unix(), eventcaseid)).Exec()
 		}
+		q.Commit()
 		if err != nil {
 			return
 		}
