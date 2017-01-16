@@ -2,6 +2,7 @@ package portal
 
 import (
 	"github.com/Cepave/open-falcon-backend/modules/fe/http/base"
+	"github.com/Cepave/open-falcon-backend/modules/fe/model/boss"
 	event "github.com/Cepave/open-falcon-backend/modules/fe/model/falcon_portal"
 )
 
@@ -258,6 +259,14 @@ func (this *PortalController) CountNumOfTlp() {
 		}
 		baseResp.Data["count"] = numberOfteam
 	}
+	this.ServeApiJson(baseResp)
+	return
+}
+
+func (this *PortalController) BossInfo() {
+	baseResp := this.BasicRespGen()
+	hosts := boss.Gethosts()
+	baseResp.Data["data"] = hosts
 	this.ServeApiJson(baseResp)
 	return
 }

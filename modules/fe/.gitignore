@@ -33,3 +33,7 @@ _testmain.go
 *.log
 /falcon-fe*
 /fe*
+
+#conf
+cfg.json.dev
+cfg.json.prod

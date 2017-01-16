@@ -40,7 +40,7 @@ func ConfigRoutes() {
 		beego.NSRouter("/whenendpointonmaintain", &PortalController{}, "get:WhenEndpointOnMaintain;post:WhenEndpointOnMaintain"),
 		beego.NSRouter("/ignoredrecovercond", &PortalController{}, "get:IgnoredAlertTimeOutRecover"),
 	)
-
+	beego.Router("/api/v1/bossinfo", &PortalController{}, "get:BossInfo")
 	beego.AddNamespace(portal)
 	beego.AddNamespace(portalv2)
 	beego.AddNamespace(alarmAdjust)
