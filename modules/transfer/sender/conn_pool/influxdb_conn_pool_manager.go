@@ -2,13 +2,14 @@ package conn_pool
 
 import (
 	"fmt"
-	influxdb "github.com/influxdata/influxdb/client/v2"
-	cmodel "github.com/open-falcon/common/model"
 	"net"
 	"net/url"
 	"strings"
 	"sync"
 	"time"
+
+	influxdb "github.com/influxdata/influxdb/client/v2"
+	cmodel "github.com/open-falcon/common/model"
 )
 
 // InfluxdbClient, 要实现io.Closer接口
@@ -106,7 +107,6 @@ func CreateInfluxdbConnPools(maxConns, maxIdle, connTimeout, callTimeout int, cl
 		}
 		cp.M[address] = createOneInfluxdbPool(address, influxdbConn, ct, maxConns, maxIdle)
 	}
-
 	return cp
 }
 

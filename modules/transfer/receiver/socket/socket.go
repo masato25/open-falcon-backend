@@ -1,9 +1,10 @@
 package socket
 
 import (
+	"net"
+
 	"github.com/Cepave/open-falcon-backend/modules/transfer/g"
 	log "github.com/Sirupsen/logrus"
-	"net"
 )
 
 func StartSocket() {

@@ -31,6 +31,7 @@ var (
 	SendToNqmTcpCnt     = nproc.NewSCounterQps("SendToNqmTcpCnt")
 	SendToNqmTcpconnCnt = nproc.NewSCounterQps("SendToNqmTcpconnCnt")
 	SendToStagingCnt    = nproc.NewSCounterQps("SendToStagingCnt")
+	SendToFluentdCnt    = nproc.NewSCounterQps("SendToFluentdCnt")
 
 	SendToJudgeDropCnt      = nproc.NewSCounterQps("SendToJudgeDropCnt")
 	SendToTsdbDropCnt       = nproc.NewSCounterQps("SendToTsdbDropCnt")
@@ -40,6 +41,7 @@ var (
 	SendToNqmTcpDropCnt     = nproc.NewSCounterQps("SendToNqmTcpDropCnt")
 	SendToNqmTcpconnDropCnt = nproc.NewSCounterQps("SendToNqmTcpconnDropCnt")
 	SendToStagingDropCnt    = nproc.NewSCounterQps("SendToStagingDropCnt")
+	SendToFluentdDropCnt    = nproc.NewSCounterQps("SendToFluentdDropCnt")
 
 	SendToJudgeFailCnt      = nproc.NewSCounterQps("SendToJudgeFailCnt")
 	SendToTsdbFailCnt       = nproc.NewSCounterQps("SendToTsdbFailCnt")
@@ -49,6 +51,7 @@ var (
 	SendToNqmTcpFailCnt     = nproc.NewSCounterQps("SendToNqmTcpFailCnt")
 	SendToNqmTcpconnFailCnt = nproc.NewSCounterQps("SendToNqmTcpconnFailCnt")
 	SendToStagingFailCnt    = nproc.NewSCounterQps("SendToStagingFailCnt")
+	SendToFluentdFailCnt    = nproc.NewSCounterQps("SendToFluentdFailCnt")
 
 	// 发送缓存大小
 	JudgeQueuesCnt    = nproc.NewSCounterBase("JudgeSendCacheCnt")
@@ -57,6 +60,7 @@ var (
 	InfluxdbQueuesCnt = nproc.NewSCounterBase("InfluxdbSendCacheCnt")
 	NqmRpcQueuesCnt   = nproc.NewSCounterBase("NqmRpcSendCacheCnt")
 	StagingQueuesCnt  = nproc.NewSCounterBase("StagingSendCacheCnt")
+	FluentdQueuesCnt  = nproc.NewSCounterBase("FluentdSendCacheCnt")
 )
 
 func Start() {
@@ -81,6 +85,7 @@ func GetAll() []interface{} {
 	ret = append(ret, SendToNqmTcpCnt.Get())
 	ret = append(ret, SendToNqmTcpconnCnt.Get())
 	ret = append(ret, SendToStagingCnt.Get())
+	ret = append(ret, SendToFluentdCnt.Get())
 
 	// drop cnt
 	ret = append(ret, SendToJudgeDropCnt.Get())
@@ -91,6 +96,7 @@ func GetAll() []interface{} {
 	ret = append(ret, SendToNqmTcpDropCnt.Get())
 	ret = append(ret, SendToNqmTcpconnDropCnt.Get())
 	ret = append(ret, SendToStagingDropCnt.Get())
+	ret = append(ret, SendToFluentdDropCnt.Get())
 
 	// send fail cnt
 	ret = append(ret, SendToJudgeFailCnt.Get())
@@ -101,6 +107,7 @@ func GetAll() []interface{} {
 	ret = append(ret, SendToNqmTcpFailCnt.Get())
 	ret = append(ret, SendToNqmTcpconnFailCnt.Get())
 	ret = append(ret, SendToStagingFailCnt.Get())
+	ret = append(ret, SendToFluentdFailCnt.Get())
 
 	// cache cnt
 	ret = append(ret, JudgeQueuesCnt.Get())
@@ -109,6 +116,7 @@ func GetAll() []interface{} {
 	ret = append(ret, InfluxdbQueuesCnt.Get())
 	ret = append(ret, NqmRpcQueuesCnt.Get())
 	ret = append(ret, StagingQueuesCnt.Get())
+	ret = append(ret, FluentdQueuesCnt.Get())
 
 	return ret
 }

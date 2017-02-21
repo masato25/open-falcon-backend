@@ -2,9 +2,10 @@ package http
 
 import (
 	"fmt"
-	"github.com/Cepave/open-falcon-backend/modules/transfer/sender"
 	"net/http"
 	"strings"
+
+	"github.com/Cepave/open-falcon-backend/modules/transfer/sender/pools"
 )
 
 func configDebugHttpRoutes() {
@@ -12,7 +13,7 @@ func configDebugHttpRoutes() {
 	http.HandleFunc("/debug/connpool/", func(w http.ResponseWriter, r *http.Request) {
 		urlParam := r.URL.Path[len("/debug/connpool/"):]
 		args := strings.Split(urlParam, "/")
-
+		mpool := pools.GetPools()
 		argsLen := len(args)
 		if argsLen < 1 {
 			w.Write([]byte(fmt.Sprintf("bad args\n")))
@@ -23,9 +24,9 @@ func configDebugHttpRoutes() {
 		receiver := args[0]
 		switch receiver {
 		case "judge":
-			result = strings.Join(sender.JudgeConnPools.Proc(), "\n")
+			result = strings.Join(mpool.JudgeConnPools.Proc(), "\n")
 		case "graph":
-			result = strings.Join(sender.GraphConnPools.Proc(), "\n")
+			result = strings.Join(mpool.GraphConnPools.Proc(), "\n")
 		default:
 			result = fmt.Sprintf("bad args, module not exist\n")
 		}

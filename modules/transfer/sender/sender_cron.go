@@ -1,11 +1,14 @@
 package sender
 
 import (
-	"github.com/Cepave/open-falcon-backend/modules/transfer/proc"
-	log "github.com/Sirupsen/logrus"
-	"github.com/toolkits/container/list"
 	"strings"
 	"time"
+
+	"github.com/Cepave/open-falcon-backend/modules/transfer/proc"
+	"github.com/Cepave/open-falcon-backend/modules/transfer/queue"
+	"github.com/Cepave/open-falcon-backend/modules/transfer/sender/pools"
+	log "github.com/Sirupsen/logrus"
+	"github.com/toolkits/container/list"
 )
 
 const (
@@ -34,9 +37,10 @@ func startLogCron() {
 }
 
 func refreshSendingCacheSize() {
-	proc.JudgeQueuesCnt.SetCnt(calcSendCacheSize(JudgeQueues))
-	proc.GraphQueuesCnt.SetCnt(calcSendCacheSize(GraphQueues))
-	proc.InfluxdbQueuesCnt.SetCnt(calcSendCacheSize(InfluxdbQueues))
+	cqueue := queue.GetQ()
+	proc.JudgeQueuesCnt.SetCnt(calcSendCacheSize(cqueue.JudgeQueues))
+	proc.GraphQueuesCnt.SetCnt(calcSendCacheSize(cqueue.GraphQueues))
+	proc.InfluxdbQueuesCnt.SetCnt(calcSendCacheSize(cqueue.InfluxdbQueues))
 }
 func calcSendCacheSize(mapList map[string]*list.SafeListLimited) int64 {
 	var cnt int64 = 0
@@ -49,5 +53,6 @@ func calcSendCacheSize(mapList map[string]*list.SafeListLimited) int64 {
 }
 
 func logConnPoolsProc() {
-	log.Printf("connPools proc: \n%v", strings.Join(GraphConnPools.Proc(), "\n"))
+	pool := pools.GetPools()
+	log.Printf("connPools proc: \n%v", strings.Join(pool.GraphConnPools.Proc(), "\n"))
 }

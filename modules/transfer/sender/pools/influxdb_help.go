@@ -1,13 +1,10 @@
-package sender
+package pools
 
 import (
 	"errors"
 	"strings"
 
-	"github.com/Cepave/open-falcon-backend/modules/transfer/g"
 	cpool "github.com/Cepave/open-falcon-backend/modules/transfer/sender/conn_pool"
-	log "github.com/Sirupsen/logrus"
-	nset "github.com/toolkits/container/set"
 )
 
 var (
@@ -16,7 +13,7 @@ var (
 	errInvalidDSNNoSlash   = errors.New("Invalid DSN: Missing the slash separating the database name")
 )
 
-func parseDSN(dsn string) (cfg *cpool.InfluxdbConnection, err error) {
+func InfuxdbParseDSN(dsn string) (cfg *cpool.InfluxdbConnection, err error) {
 	// New config
 	cfg = &cpool.InfluxdbConnection{}
 
@@ -88,53 +85,4 @@ func parseDSN(dsn string) (cfg *cpool.InfluxdbConnection, err error) {
 	}
 
 	return
-}
-
-func initConnPools() {
-	cfg := g.Config()
-
-	judgeInstances := nset.NewStringSet()
-	for _, instance := range cfg.Judge.Cluster {
-		judgeInstances.Add(instance)
-	}
-	JudgeConnPools = cpool.CreateSafeRpcConnPools(cfg.Judge.MaxConns, cfg.Judge.MaxIdle,
-		cfg.Judge.ConnTimeout, cfg.Judge.CallTimeout, judgeInstances.ToSlice())
-
-	// tsdb
-	if cfg.Tsdb.Enabled {
-		TsdbConnPoolHelper = cpool.NewTsdbConnPoolHelper(cfg.Tsdb.Address, cfg.Tsdb.MaxConns, cfg.Tsdb.MaxIdle, cfg.Tsdb.ConnTimeout, cfg.Tsdb.CallTimeout)
-	}
-
-	// Staging
-	if cfg.Staging.Enabled {
-		StagingConnPoolHelper = cpool.NewStagingConnPoolHelper(cfg.Staging.Address, cfg.Staging.MaxConns, cfg.Staging.MaxIdle, cfg.Staging.ConnTimeout, cfg.Staging.CallTimeout)
-	}
-
-	// graph
-	graphInstances := nset.NewSafeSet()
-	for _, nitem := range cfg.Graph.ClusterList {
-		for _, addr := range nitem.Addrs {
-			graphInstances.Add(addr)
-		}
-	}
-	GraphConnPools = cpool.CreateSafeRpcConnPools(cfg.Graph.MaxConns, cfg.Graph.MaxIdle,
-		cfg.Graph.ConnTimeout, cfg.Graph.CallTimeout, graphInstances.ToSlice())
-
-	influxdbInstances := make([]cpool.InfluxdbConnection, 1)
-	dsn, err := parseDSN(cfg.Influxdb.Address)
-	if err != nil {
-		log.Print("syntax of influxdb address is wrong")
-	} else {
-		influxdbInstances[0] = *dsn
-		InfluxdbConnPools = cpool.CreateInfluxdbConnPools(cfg.Influxdb.MaxConns, cfg.Influxdb.MaxIdle,
-			cfg.Influxdb.ConnTimeout, cfg.Influxdb.CallTimeout, influxdbInstances)
-	}
-}
-
-func DestroyConnPools() {
-	JudgeConnPools.Destroy()
-	GraphConnPools.Destroy()
-	TsdbConnPoolHelper.Destroy()
-	InfluxdbConnPools.Destroy()
-	StagingConnPoolHelper.Destroy()
 }

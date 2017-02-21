@@ -8,7 +8,7 @@ import (
 
 	"github.com/Cepave/open-falcon-backend/modules/transfer/g"
 	"github.com/Cepave/open-falcon-backend/modules/transfer/proc"
-	"github.com/Cepave/open-falcon-backend/modules/transfer/sender"
+	"github.com/Cepave/open-falcon-backend/modules/transfer/queue"
 	cmodel "github.com/open-falcon/common/model"
 	cutils "github.com/open-falcon/common/utils"
 )
@@ -43,7 +43,7 @@ func (t *Transfer) Update(args []*cmodel.MetricValue, reply *cmodel.TransferResp
 func RecvMetricValues(args []*cmodel.MetricValue, reply *cmodel.TransferResponse, from string) error {
 	start := time.Now()
 	reply.Invalid = 0
-
+	que := queue.GetQ()
 	cfg := g.Config()
 	filters := cfg.Staging.Filters
 	items := []*cmodel.MetaData{}
@@ -157,32 +157,37 @@ func RecvMetricValues(args []*cmodel.MetricValue, reply *cmodel.TransferResponse
 	}
 
 	// demultiplexing
-	nqmFpingItems, nqmTcppingItems, nqmTcpconnItems, genericItems := sender.Demultiplex(items)
+	nqmFpingItems, nqmTcppingItems, nqmTcpconnItems, genericItems := queue.Demultiplex(items)
 
 	if cfg.Staging.Enabled {
-		sender.Push2StagingSendQueue(stagingItems)
+		que.Push2StagingSendQueue(stagingItems)
 	}
 
 	if cfg.Graph.Enabled {
-		sender.Push2GraphSendQueue(genericItems)
+		que.Push2GraphSendQueue(genericItems)
 	}
 
 	if cfg.Judge.Enabled {
-		sender.Push2JudgeSendQueue(genericItems)
+		que.Push2JudgeSendQueue(genericItems)
 	}
 
 	if cfg.Tsdb.Enabled {
-		sender.Push2TsdbSendQueue(genericItems)
+		que.Push2TsdbSendQueue(genericItems)
 	}
 
 	if cfg.Influxdb.Enabled {
-		sender.Push2InfluxdbSendQueue(genericItems)
+		que.Push2InfluxdbSendQueue(genericItems)
 	}
 
 	if cfg.NqmRest.Enabled {
-		sender.Push2NqmIcmpSendQueue(nqmFpingItems)
-		sender.Push2NqmTcpSendQueue(nqmTcppingItems)
-		sender.Push2NqmTcpconnSendQueue(nqmTcpconnItems)
+		que.Push2NqmIcmpSendQueue(nqmFpingItems)
+		que.Push2NqmTcpSendQueue(nqmTcppingItems)
+		que.Push2NqmTcpconnSendQueue(nqmTcpconnItems)
+	}
+
+	if cfg.Fluentd.Enabled {
+		// fluentd tester
+		que.Push2FluentdSendQueue(genericItems)
 	}
 
 	reply.Message = "ok"

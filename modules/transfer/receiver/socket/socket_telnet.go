@@ -10,7 +10,7 @@ import (
 
 	"github.com/Cepave/open-falcon-backend/modules/transfer/g"
 	"github.com/Cepave/open-falcon-backend/modules/transfer/proc"
-	"github.com/Cepave/open-falcon-backend/modules/transfer/sender"
+	"github.com/Cepave/open-falcon-backend/modules/transfer/queue"
 	cmodel "github.com/open-falcon/common/model"
 )
 
@@ -22,7 +22,7 @@ func socketTelnetHandle(conn net.Conn) {
 
 	cfg := g.Config()
 	timeout := time.Duration(cfg.Socket.Timeout) * time.Second
-
+	que := queue.GetQ()
 	for {
 		conn.SetReadDeadline(time.Now().Add(timeout))
 		line, err := buf.ReadString('\n')
@@ -64,24 +64,24 @@ func socketTelnetHandle(conn net.Conn) {
 	proc.RecvCnt.IncrBy(int64(len(items)))
 
 	// demultiplexing
-	nqmFpingItems, nqmTcppingItems, nqmTcpconnItems, genericItems := sender.Demultiplex(items)
+	nqmFpingItems, nqmTcppingItems, nqmTcpconnItems, genericItems := queue.Demultiplex(items)
 
 	if cfg.Graph.Enabled {
-		sender.Push2GraphSendQueue(genericItems)
+		que.Push2GraphSendQueue(genericItems)
 	}
 
 	if cfg.Judge.Enabled {
-		sender.Push2JudgeSendQueue(genericItems)
+		que.Push2JudgeSendQueue(genericItems)
 	}
 
 	if cfg.Influxdb.Enabled {
-		sender.Push2InfluxdbSendQueue(genericItems)
+		que.Push2InfluxdbSendQueue(genericItems)
 	}
 
 	if cfg.NqmRest.Enabled {
-		sender.Push2NqmIcmpSendQueue(nqmFpingItems)
-		sender.Push2NqmTcpSendQueue(nqmTcppingItems)
-		sender.Push2NqmTcpconnSendQueue(nqmTcpconnItems)
+		que.Push2NqmIcmpSendQueue(nqmFpingItems)
+		que.Push2NqmTcpSendQueue(nqmTcppingItems)
+		que.Push2NqmTcpconnSendQueue(nqmTcpconnItems)
 	}
 
 	return

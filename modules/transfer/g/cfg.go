@@ -96,6 +96,17 @@ type StagingConfig struct {
 	Filters     []string `json:"filters"`
 }
 
+type FluentdConfig struct {
+	Enabled     bool     `json:"enabled"`
+	Batch       int      `json:"batch"`
+	ConnTimeout int      `json:"connTimeout"`
+	CallTimeout int      `json:"callTimeout"`
+	MaxConns    int      `json:"maxConns"`
+	MaxIdle     int      `json:"maxIdle"`
+	MaxRetry    int      `json:"retry"`
+	Address     []string `json:"address"`
+}
+
 type GlobalConfig struct {
 	Debug    bool            `json:"debug"`
 	MinStep  int             `json:"minStep"` //最小周期,单位sec
@@ -108,6 +119,7 @@ type GlobalConfig struct {
 	Influxdb *InfluxdbConfig `json:"influxdb"`
 	NqmRest  *NqmRestConfig  `json:"nqmRest"`
 	Staging  *StagingConfig  `json:"staging"`
+	Fluentd  *FluentdConfig  `json:"fluentd"`
 }
 
 var (

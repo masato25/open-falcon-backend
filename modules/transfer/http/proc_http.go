@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/Cepave/open-falcon-backend/modules/transfer/proc"
-	"github.com/Cepave/open-falcon-backend/modules/transfer/sender"
+	"github.com/Cepave/open-falcon-backend/modules/transfer/queue"
 	cutils "github.com/open-falcon/common/utils"
 )
 
@@ -23,7 +23,7 @@ func configProcHttpRoutes() {
 
 	// step
 	http.HandleFunc("/proc/step", func(w http.ResponseWriter, r *http.Request) {
-		RenderDataJson(w, map[string]interface{}{"min_step": sender.MinStep})
+		RenderDataJson(w, map[string]interface{}{"min_step": queue.MinStep})
 	})
 
 	// trace

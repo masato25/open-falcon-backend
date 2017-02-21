@@ -1,15 +1,25 @@
-package sender
+package rings
 
 import (
 	"github.com/Cepave/consistent"
 	"github.com/Cepave/open-falcon-backend/modules/transfer/g"
 )
 
-func initNodeRings() {
-	cfg := g.Config()
+type Rings struct {
+	JudgeNodeRing *ConsistentHashNodeRing
+	GraphNodeRing *ConsistentHashNodeRing
+}
 
-	JudgeNodeRing = newConsistentHashNodesRing(cfg.Judge.Replicas, KeysOfMap(cfg.Judge.Cluster))
-	GraphNodeRing = newConsistentHashNodesRing(cfg.Graph.Replicas, KeysOfMap(cfg.Graph.Cluster))
+var rings = Rings{}
+
+func GetRings() Rings {
+	return rings
+}
+
+func Start() {
+	cfg := g.Config()
+	rings.JudgeNodeRing = newConsistentHashNodesRing(cfg.Judge.Replicas, KeysOfMap(cfg.Judge.Cluster))
+	rings.GraphNodeRing = newConsistentHashNodesRing(cfg.Graph.Replicas, KeysOfMap(cfg.Graph.Cluster))
 }
 
 // TODO 考虑放到公共组件库,或utils库

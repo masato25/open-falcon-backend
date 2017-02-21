@@ -2,14 +2,17 @@ package main
 
 import (
 	"fmt"
+	"os"
+
 	"github.com/Cepave/open-falcon-backend/common/logruslog"
 	"github.com/Cepave/open-falcon-backend/common/vipercfg"
 	"github.com/Cepave/open-falcon-backend/modules/transfer/g"
 	"github.com/Cepave/open-falcon-backend/modules/transfer/http"
 	"github.com/Cepave/open-falcon-backend/modules/transfer/proc"
+	"github.com/Cepave/open-falcon-backend/modules/transfer/queue"
 	"github.com/Cepave/open-falcon-backend/modules/transfer/receiver"
+	"github.com/Cepave/open-falcon-backend/modules/transfer/rings"
 	"github.com/Cepave/open-falcon-backend/modules/transfer/sender"
-	"os"
 )
 
 func main() {
@@ -29,11 +32,21 @@ func main() {
 	vipercfg.Load()
 	g.ParseConfig(vipercfg.Config().GetString("config"))
 	logruslog.Init()
+
 	// proc
 	proc.Start()
 
-	sender.Start()
+	// rings (hash gen)
+	rings.Start()
+
+	// queue
+	queue.Start()
+
+	// receive
 	receiver.Start()
+
+	// sender
+	sender.Start()
 
 	// http
 	http.Start()
