@@ -10,6 +10,8 @@ import (
 	"github.com/parnurzeal/gorequest"
 )
 
+const Enable = false
+
 var host = "127.0.0.1:1234"
 var name = "root"
 var password = "password"
