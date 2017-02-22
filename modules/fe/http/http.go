@@ -7,6 +7,7 @@ import (
 	"github.com/Cepave/open-falcon-backend/modules/fe/http/boss"
 	"github.com/Cepave/open-falcon-backend/modules/fe/http/dashboard"
 	"github.com/Cepave/open-falcon-backend/modules/fe/http/home"
+	"github.com/Cepave/open-falcon-backend/modules/fe/http/newgraph"
 	"github.com/Cepave/open-falcon-backend/modules/fe/http/portal"
 	"github.com/Cepave/open-falcon-backend/modules/fe/http/uic"
 	uic_model "github.com/Cepave/open-falcon-backend/modules/fe/model/uic"
@@ -41,6 +42,7 @@ func Start() {
 	dashboard.ConfigRoutes()
 	portal.ConfigRoutes()
 	boss.ConfigRoutes()
+	newgraph.ConfigRoutes()
 
 	beego.SetLogger("console", `{"color":false}`)
 	beego.AddFuncMap("member", uic_model.MembersByTeamId)
