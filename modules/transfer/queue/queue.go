@@ -49,6 +49,7 @@ func Start() {
 	}
 	cqueue.Rings = rings.GetRings()
 	if cfg.Judge.Enabled {
+		cqueue.JudgeQueues = map[string]*nlist.SafeListLimited{}
 		for node, _ := range cfg.Judge.Cluster {
 			Q := nlist.NewSafeListLimited(DefaultSendQueueMaxSize)
 			cqueue.JudgeQueues[node] = Q
@@ -56,6 +57,7 @@ func Start() {
 	}
 
 	if cfg.Graph.Enabled {
+		cqueue.GraphQueues = map[string]*nlist.SafeListLimited{}
 		for node, nitem := range cfg.Graph.ClusterList {
 			for _, addr := range nitem.Addrs {
 				Q := nlist.NewSafeListLimited(DefaultSendQueueMaxSize)
@@ -69,6 +71,7 @@ func Start() {
 	}
 
 	if cfg.Influxdb.Enabled {
+		cqueue.InfluxdbQueues = map[string]*nlist.SafeListLimited{}
 		Q := nlist.NewSafeListLimited(DefaultSendQueueMaxSize)
 		cqueue.InfluxdbQueues["default"] = Q
 	}

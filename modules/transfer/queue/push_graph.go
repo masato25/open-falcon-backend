@@ -6,9 +6,9 @@ import (
 	log "github.com/Sirupsen/logrus"
 
 	"github.com/Cepave/open-falcon-backend/modules/transfer/common"
+	"github.com/Cepave/open-falcon-backend/modules/transfer/g"
 	"github.com/Cepave/open-falcon-backend/modules/transfer/proc"
 	cmodel "github.com/open-falcon/common/model"
-	"github.com/open-falcon/transfer/g"
 	nlist "github.com/toolkits/container/list"
 )
 

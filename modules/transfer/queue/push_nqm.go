@@ -90,7 +90,7 @@ func convert2NqmPingItem(d *cmodel.MetaData) (*nqmPingItem, error) {
 	if err != nil {
 		return &t, err
 	}
-	metrics, err := convert2NqmMetrics(d)
+	metrics, err := Convert2NqmMetrics(d)
 	if err != nil {
 		return &t, err
 	}
@@ -219,7 +219,7 @@ func convert2NqmEndpoint(d *cmodel.MetaData, endType string) (*nqmEndpoint, erro
 }
 
 // 轉化成 nqmMetrc 格式
-func convert2NqmMetrics(d *cmodel.MetaData) (*nqmMetrics, error) {
+func Convert2NqmMetrics(d *cmodel.MetaData) (*nqmMetrics, error) {
 	t := nqmMetrics{
 		Rttmin:      -1,
 		Rttavg:      -1,
