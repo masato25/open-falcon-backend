@@ -48,6 +48,7 @@ func RecvMetricValues(args []*cmodel.MetricValue, reply *cmodel.TransferResponse
 	filters := cfg.Staging.Filters
 	items := []*cmodel.MetaData{}
 	stagingItems := []*cmodel.MetricValue{}
+	// log.Debugf("recviced: %d", len(args))
 	for _, v := range args {
 		if v == nil {
 			reply.Invalid += 1
@@ -158,7 +159,7 @@ func RecvMetricValues(args []*cmodel.MetricValue, reply *cmodel.TransferResponse
 
 	// demultiplexing
 	nqmFpingItems, nqmTcppingItems, nqmTcpconnItems, genericItems := queue.Demultiplex(items)
-
+	// log.Debugf("recviced genericItems : %d", len(genericItems))
 	if cfg.Staging.Enabled {
 		que.Push2StagingSendQueue(stagingItems)
 	}
