@@ -13,7 +13,7 @@ import (
 // Tsdb定时任务, 将数据通过api发送到tsdb
 func Forward2FluentdTask(fqueue *nlist.SafeListLimited, concurrent int) {
 	conf := g.Config()
-	batch := conf.Tsdb.Batch // 一次发送,最多batch条数据
+	batch := conf.Fluentd.Batch // 一次发送,最多batch条数据
 	sema := nsema.NewSemaphore(concurrent)
 	// conn, err := net.Dial("tcp", conf.Fluentd.Address)
 	// defer fmt.Println("Forward2FluentdTask is closed")
@@ -24,6 +24,7 @@ func Forward2FluentdTask(fqueue *nlist.SafeListLimited, concurrent int) {
 	// defer conn.Close()
 	for {
 		items := fqueue.PopBackBy(batch)
+		itmeSize := len(items)
 		if len(items) == 0 {
 			time.Sleep(DefaultSendTaskSleepInterval)
 			continue
@@ -50,7 +51,7 @@ func Forward2FluentdTask(fqueue *nlist.SafeListLimited, concurrent int) {
 					"option": "optional",
 				},
 			})
-			FluentdCoonPools.Call(itemstr)
+			FluentdCoonPools.Call(itemstr, int64(itmeSize))
 		}(items)
 	}
 }

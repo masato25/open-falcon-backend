@@ -25,4 +25,6 @@ func Start() {
 	JudgeConnPools = mypools.JudgeConnPools
 	GraphConnPools = mypools.GraphConnPools
 	FluentdCoonPools = mypools.FluentdConnPools
+	InfluxdbConnPools = mypools.InfluxdbConnPools
+	TsdbConnPoolHelper = mypools.TsdbConnPoolHelper
 }

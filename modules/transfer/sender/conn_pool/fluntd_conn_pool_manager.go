@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"math/rand"
 	"net"
-	"strings"
 	"sync"
 	"time"
 
@@ -14,22 +13,25 @@ import (
 
 type FluentdClient struct {
 	sync.RWMutex
-	conn    net.Conn
-	cli     interface{}
-	addr    string
-	timeout int
+	conn      net.Conn
+	connected bool
+	cli       interface{}
+	addr      string
+	timeout   int
 }
 
 // ConnPools Manager
 type FluentdConnPools struct {
 	FluentdClients []*FluentdClient
+	Size           int
 }
 
 func (this *FluentdClient) Addr() string {
 	return this.addr
 }
+
 func (this *FluentdClient) Closed() bool {
-	return this.cli == nil
+	return this.connected == false
 }
 
 func (this *FluentdClient) Close() error {
@@ -37,6 +39,7 @@ func (this *FluentdClient) Close() error {
 	if err != nil {
 		log.Error(err.Error())
 	} else {
+		this.connected = false
 		this.cli = nil
 	}
 	return err
@@ -46,71 +49,99 @@ func (this *FluentdClient) GetConn() net.Conn {
 	return this.conn
 }
 
-func (this *FluentdClient) ReConn() error {
-	return this.Conn(this.addr, this.timeout)
+func (this *FluentdClient) ReConn() bool {
+	err := this.Connect2(this.addr, this.timeout)
+	if err != nil {
+		log.Errorf("trying to reconnect to %v, got error: %v", this.Addr(), err.Error())
+		return false
+	} else {
+		log.Infof("connect to %v, scuessfuly", this.Addr())
+		this.connected = true
+		return true
+	}
 }
 
-func (this *FluentdClient) Conn(addr string, timeout int) error {
+func (this *FluentdClient) Connect2(addr string, timeout int) error {
 	this.addr = addr
 	this.timeout = timeout
 
 	conn, err := net.DialTimeout("tcp", addr, (time.Duration(timeout) * time.Second))
 	if err != nil {
 		return err
+	} else {
+		this.connected = true
 	}
 	this.conn = conn
 	return err
 }
 
-func (this *FluentdConnPools) Call(data string) {
-	conn, ok := this.Get()
-	if !ok {
-		log.Error("get connection error")
+func sendData(fc *FluentdClient, data string) bool {
+	if fc.Closed() {
+		fc.ReConn()
+		return false
 	}
-	conn.Lock()
-	n, err := fmt.Fprintf(conn.GetConn(), data+"\n")
-	if err != nil && strings.Contains(err.Error(), "write: broken pipe") {
-		err = conn.ReConn()
-		if err != nil {
-			log.Errorf("trying to reconnect to %v, got error: %v", conn, err.Error())
-		} else {
-			log.Infof("connect to %v, scuessfuly", conn.Addr())
-			//retry
-			n, err = fmt.Fprintf(conn.GetConn(), data+"\n")
-		}
-	} else if err != nil {
-		log.Error(err.Error())
+	conn := fc.GetConn()
+	n, err := fmt.Fprintf(conn, data+"\n")
+	if err != nil {
+		fc.ReConn()
+		log.Errorf("send itme to fluentd got error: %v", err.Error())
+		return false
 	} else {
-		log.Debugf("%v items is send", n)
+		log.Debugf("%v item is send to flunetd:%v", n, fc.Addr())
 	}
-	//failed failed count incrase
-	if n == 0 || err != nil {
-		proc.SendToFluentdFailCnt.Incr()
-	}
-	conn.Unlock()
+	return true
 }
 
-func (this *FluentdConnPools) Get() (*FluentdClient, bool) {
-	log.Debugf("FluentdConnPools: %v\n", this)
-	log.Debugf("fpools: %v\n", len(this.FluentdClients))
-	if len(this.FluentdClients) == 0 {
-		return nil, false
+func (this *FluentdConnPools) Call(data string, count int64) {
+	conn := this.Get()
+	ok := sendData(conn, data+"\n")
+	if !ok {
+		rand.Seed(time.Now().UnixNano())
+		for _, i := range rand.Perm(len(this.FluentdClients)) {
+			conn = this.Get(i)
+			if sendOk := sendData(conn, data+"\n"); sendOk {
+				proc.SendToFluentdCnt.IncrBy(count)
+				return
+			}
+		}
+		log.Error("all connection is gone, item lost.")
+		proc.SendToFluentdDropCnt.IncrBy(count)
+		return
 	}
-	ind := rand.Intn(len(this.FluentdClients))
-	return this.FluentdClients[ind], true
+	proc.SendToFluentdCnt.IncrBy(count)
+	return
+}
+
+func (this *FluentdConnPools) Get(inds ...int) *FluentdClient {
+	log.Debugf("FluentdConnPools: %v\n", this)
+	log.Debugf("fpools: %v\n", this.Size)
+	if inds == nil {
+		ind := rand.Intn(this.Size)
+		return this.FluentdClients[ind]
+	} else {
+		log.Debugf("inds: %v", inds)
+		ind := inds[0]
+		return this.FluentdClients[ind]
+	}
 }
 
 func CreateFluentdConnPools(addrs []string, connTimeout int) *FluentdConnPools {
 	pools := FluentdConnPools{}
+	counter := 0
 	for _, addr := range addrs {
 		f := FluentdClient{}
-		err := f.Conn(addr, connTimeout)
+		err := f.Connect2(addr, connTimeout)
 		if err != nil {
 			log.Error(err.Error())
-			continue
 		}
 		pools.FluentdClients = append(pools.FluentdClients, &f)
+		counter += 1
 	}
+	pools.Size = counter
 	log.Debugf("CreateFluentdConnPools: %v", pools)
 	return &pools
+}
+
+func (this *FluentdConnPools) Destroy() {
+	this.FluentdClients = []*FluentdClient{}
 }

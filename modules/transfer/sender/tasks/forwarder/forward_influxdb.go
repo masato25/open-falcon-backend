@@ -52,6 +52,8 @@ func Forward2InfluxdbTask(Q *list.SafeListLimited, concurrent int) {
 					sendOk = true
 					break
 				}
+				log.Println(err.Error())
+
 				time.Sleep(time.Millisecond * 10)
 			}
 
