@@ -13,6 +13,7 @@ import (
 	"github.com/Cepave/open-falcon-backend/modules/transfer/receiver"
 	"github.com/Cepave/open-falcon-backend/modules/transfer/rings"
 	"github.com/Cepave/open-falcon-backend/modules/transfer/sender"
+	log "github.com/Sirupsen/logrus"
 )
 
 func main() {
@@ -27,12 +28,13 @@ func main() {
 		fmt.Println(g.VERSION, g.COMMIT)
 		os.Exit(0)
 	}
-
 	// global config
 	vipercfg.Load()
 	g.ParseConfig(vipercfg.Config().GetString("config"))
 	logruslog.Init()
-
+	if g.Config().Debug {
+		log.SetLevel(log.DebugLevel)
+	}
 	// proc
 	proc.Start()
 
