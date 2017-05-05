@@ -4,15 +4,17 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"os/signal"
 	"strings"
+	"syscall"
 
+	yaag_gin "github.com/masato25/yaag/gin"
 	"github.com/Cepave/open-falcon-backend/modules/f2e-api/app/controller"
 	"github.com/Cepave/open-falcon-backend/modules/f2e-api/config"
 	"github.com/Cepave/open-falcon-backend/modules/f2e-api/graph"
 	log "github.com/Sirupsen/logrus"
 	"github.com/spf13/viper"
 	"gopkg.in/gin-gonic/gin.v1"
-	yaagGin "gopkg.in/masato25/yaag.v1/gin"
 	"gopkg.in/masato25/yaag.v1/yaag"
 )
 
@@ -43,14 +45,21 @@ func main() {
 	cfg = strings.Replace(cfg, ".json", "", 1)
 	viper.SetConfigName(cfg)
 
-	viper.ReadInConfig()
-	err := config.InitLog(viper.GetString("log_level"))
+	err := viper.ReadInConfig()
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = config.InitLog(viper.GetString("log_level"))
 	if err != nil {
 		log.Fatal(err)
 	}
 	err = config.InitDB(viper.GetBool("db.db_bug"))
 	if err != nil {
 		log.Fatalf("db conn failed with error %s", err.Error())
+	}
+
+	if viper.GetString("log_level") != "debug" {
+		gin.SetMode(gin.ReleaseMode)
 	}
 	routes := gin.Default()
 	if viper.GetBool("gen_doc") {
@@ -60,9 +69,19 @@ func main() {
 			DocPath:  viper.GetString("gen_doc_path"),
 			BaseUrls: map[string]string{"Production": "/api/v1", "Staging": "/api/v1"},
 		})
-		routes.Use(yaagGin.Document())
+		routes.Use(yaag_gin.Document())
 	}
 	initGraph()
 	//start gin server
-	controller.StartGin(viper.GetString("web_port"), routes)
+	log.Debugf("will start with port:%v", viper.GetString("web_port"))
+	go controller.StartGin(viper.GetString("web_port"), routes)
+
+	sigs := make(chan os.Signal, 1)
+	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+	go func() {
+		<-sigs
+		fmt.Println()
+		os.Exit(0)
+	}()
+	select {}
 }
