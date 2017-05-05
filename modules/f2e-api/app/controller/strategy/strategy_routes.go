@@ -25,4 +25,5 @@ func Routes(r *gin.Engine) {
 	met := r.Group("/api/v1/metric")
 	met.Use(utils.AuthSessionMidd)
 	met.GET("tmplist", MetricQuery)
+	met.GET("default_list", MetricQuery)
 }
