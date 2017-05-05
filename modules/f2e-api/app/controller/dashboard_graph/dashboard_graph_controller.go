@@ -74,10 +74,10 @@ type APIGraphCreateReqData struct {
 	Title      string   `json:"title" binding:"required"`
 	Endpoints  []string `json:"endpoints" binding:"required"`
 	Counters   []string `json:"counters" binding:"required"`
-	TimeSpan   int      `json:"timespan"`
+	TimeSpan   int64    `json:"timespan"`
 	GraphType  string   `json:"graph_type"`
 	Method     string   `json:"method"`
-	Position   int      `json:"position"`
+	Position   int64    `json:"position"`
 	FalconTags string   `json:"falcon_tags"`
 }
 
@@ -135,10 +135,10 @@ type APIGraphUpdateReqData struct {
 	Title      string   `json:"title"`
 	Endpoints  []string `json:"endpoints"`
 	Counters   []string `json:"counters"`
-	TimeSpan   int      `json:"timespan"`
+	TimeSpan   int64    `json:"timespan"`
 	GraphType  string   `json:"graph_type"`
 	Method     string   `json:"method"`
-	Position   int      `json:"position"`
+	Position   int64    `json:"position"`
 	FalconTags string   `json:"falcon_tags"`
 }
 

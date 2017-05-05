@@ -24,4 +24,11 @@ func Routes(r *gin.Engine) {
 	owlgraph := r.Group("/api/v1/owlgraph")
 	owlgraph.Use(utils.AuthSessionMidd)
 	owlgraph.GET("/keyword_search", HostsSearching)
+
+	grfanaapi := r.Group("/api")
+	grfanaapi.GET("/v1/grafana", GrafanaMainQuery)
+	grfanaapi.GET("/v1/grafana/metrics/find", GrafanaMainQuery)
+	grfanaapi.POST("/v1/grafana/render", GrafanaRender)
+	grfanaapi.GET("/v1/grafana/render", GrafanaRender)
+
 }

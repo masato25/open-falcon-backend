@@ -8,13 +8,13 @@ import (
 	"strings"
 	"syscall"
 
-	yaag_gin "github.com/masato25/yaag/gin"
 	"github.com/Cepave/open-falcon-backend/modules/f2e-api/app/controller"
 	"github.com/Cepave/open-falcon-backend/modules/f2e-api/config"
 	"github.com/Cepave/open-falcon-backend/modules/f2e-api/graph"
 	log "github.com/Sirupsen/logrus"
 	"github.com/spf13/viper"
 	"gopkg.in/gin-gonic/gin.v1"
+	yaag_gin "gopkg.in/masato25/yaag.v1/gin"
 	"gopkg.in/masato25/yaag.v1/yaag"
 )
 
