@@ -15,7 +15,7 @@ const expecstatus = http.StatusExpectationFailed
 
 func Routes(r *gin.Engine) {
 	db = config.Con()
-	expr := r.Group("/api/v1/dashboard/graph")
+	expr := r.Group("/api/v1/owl_dashboard/graph")
 	expr.Use(utils.AuthSessionMidd)
 	expr.POST("", CreateGraph)
 	expr.PUT("", UpdateGraph)

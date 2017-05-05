@@ -15,10 +15,10 @@ const expecstatus = http.StatusExpectationFailed
 
 func Routes(r *gin.Engine) {
 	db = config.Con()
-	sa := r.Group("/api/v1/dashboard/screen_all")
+	sa := r.Group("/api/v1/owl_dashboard/screen_all")
 	sa.Use(utils.AuthSessionMidd)
 	sa.GET("", GetScreenList)
-	expr := r.Group("/api/v1/dashboard/screen")
+	expr := r.Group("/api/v1/owl_dashboard/screen")
 	expr.Use(utils.AuthSessionMidd)
 	expr.POST("", CreateScreen)
 	expr.GET("/:sid", GetScreen)
