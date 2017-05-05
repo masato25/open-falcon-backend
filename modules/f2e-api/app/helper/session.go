@@ -10,6 +10,7 @@ import (
 	"gopkg.in/gin-gonic/gin.v1"
 	"github.com/Cepave/open-falcon-backend/modules/f2e-api/app/model/uic"
 	"github.com/Cepave/open-falcon-backend/modules/f2e-api/config"
+	"github.com/spf13/viper"
 )
 
 type WebSession struct {
@@ -56,6 +57,14 @@ func SessionChecking(c *gin.Context) (auth bool, err error) {
 	if err != nil {
 		return
 	}
+
+	//default_token used in server side access
+	default_token := viper.GetString("default_token")
+	if default_token != "" && websessio.Sig == default_token {
+		auth = true
+		return
+	}
+
 	db := config.Con().Uic
 	var user uic.User
 	db.Where("name = ?", websessio.Name).Find(&user)
@@ -80,7 +89,7 @@ func GetUser(c *gin.Context) (user uic.User, err error) {
 	user = uic.User{
 		Name: websession.Name,
 	}
-	dt := db.Where(&user).Find(&user)
+	dt := db.Table("user").Where(&user).Find(&user)
 	err = dt.Error
 	return
 }
