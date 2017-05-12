@@ -118,6 +118,28 @@ func EndpointsQuerySubMetric(c *gin.Context) {
 	return
 }
 
+type APIEndpointsPofileSearchInput struct {
+	KeysWords []string `json:"key_words" form:"key_words" binding:"required"`
+}
+
+func EndpointsPofileSearch(c *gin.Context) {
+	inputs := APIEndpointsPofileSearchInput{}
+	if err := c.Bind(&inputs); err != nil {
+		h.JSONR(c, http.StatusBadRequest, err.Error())
+		return
+	}
+	bossList := boss.GetBossObjs()
+
+	results := []boss.BossHost{}
+	for _, bs := range bossList {
+		if bs.MatchStrings(inputs.KeysWords) {
+			results = append(results, bs)
+		}
+	}
+	h.JSONR(c, results)
+	return
+}
+
 type APIEndpointsGetMetricBySubStarInput struct {
 	Endpoints      []string `json:"endpoints" form:"endpoints" binding:"required"`
 	MetricQuery    string   `json:"metric_query" form:"metric_query" binding:"required"`

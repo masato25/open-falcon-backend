@@ -26,4 +26,5 @@ func Routes(r *gin.Engine) {
 	owlgraph.GET("/keyword_search", HostsSearching)
 	owlgraph.POST("/cat_counters", EndpointsQuerySubMetric)
 	owlgraph.POST("/cat_gt_counters", EndpointsGetMetricBySubStar)
+	owlgraph.POST("/enp_porfile_search", EndpointsPofileSearch)
 }
