@@ -1,0 +1,13 @@
+"graphs": {
+  "cluster": {
+    "graph-03" : "0.0.0.0:6070"
+  },
+  "clusterHTTP": {
+    "graph-03" : "0.0.0.0:6071"
+  },
+  "max_conns": 100,
+  "max_idle": 100,
+  "conn_timeout": 1000,
+  "call_timeout": 5000,
+  "numberOfReplicas": 500
+}
