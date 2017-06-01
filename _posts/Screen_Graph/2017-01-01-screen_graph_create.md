@@ -31,8 +31,8 @@ layout: default
 * method
   * string
   * accept values:
-    * SUM  
-    * 空值
+    * 'sum'  
+    * '' (空值)
 * position
   * int64
   * 排序

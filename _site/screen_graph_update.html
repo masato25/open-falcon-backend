@@ -10,25 +10,26 @@
 <body>  
   <ul>
   <li><a href="#/authentication">Session</a> Required</li>
-  <li>screen_id
+  <li>id
     <ul>
-      <li>int64 [required]</li>
+      <li>graph id</li>
+      <li>int64 [required] - in url path</li>
     </ul>
   </li>
   <li>title
     <ul>
-      <li>string [required]</li>
+      <li>string</li>
       <li>name of graph</li>
     </ul>
   </li>
   <li>endpoints
     <ul>
-      <li>[]string [required]</li>
+      <li>[]string</li>
     </ul>
   </li>
   <li>counters
     <ul>
-      <li>[]string [required]</li>
+      <li>[]string</li>
     </ul>
   </li>
   <li>timespan
@@ -43,7 +44,7 @@
   </li>
   <li>graph_type
     <ul>
-      <li>string [required]</li>
+      <li>string</li>
       <li>视角: h (endpoint view), k (counter view), a (combo view)</li>
       <li>accept values:
         <ul>
@@ -59,7 +60,7 @@
       <li>string</li>
       <li>accept values:
         <ul>
-          <li>‘sum’  </li>
+          <li>‘sum’</li>
           <li>’’ (空值)</li>
         </ul>
       </li>
@@ -85,12 +86,18 @@
 
 <h3 id="request">Request</h3>
 
-<pre><code>{
-  "title": "imtitle",
-  "screen_id": 1266,
-  "endpoints": ["a-host","b-host"],
-  "counters": ["c.1","c.2"],
-  "graph_type": 'h'
+<pre><code>/api/v1/dashboard/graph/4246
+{
+  "title": "testtt",
+  "screen_id": 955,
+  "endpoints": ["a1","a2"],
+  "counters": ["c1","c2"],
+  "timespan":9999,
+  "graph_type":"a",
+  "method": "sum",
+  "graph_type": "h",
+  "position": 22,
+  "falcon_tags": "a=1,b=2"
 }
 </code></pre>
 
@@ -98,9 +105,25 @@
 
 <p><code>Status: 200</code>
 <code>
-{"id":4912}
-</code>
-* return created graph id</p>
+{
+  "graph_id": 4626,
+  "title": "testtt",
+  "screen_id": 955,
+  "endpoints": [
+    "a1",
+    "a2"
+  ],
+  "counters": [
+    "c1",
+    "c2"
+  ],
+  "timespan": 9999,
+  "graph_type": "a",
+  "method": "sum",
+  "position": 22,
+  "falcon_tags": "a=1,b=2"
+}
+</code></p>
 
   
   <!--[if lt IE 9]><script src='http://html5shim.googlecode.com/svn/trunk/html5.js'></script><![endif]-->

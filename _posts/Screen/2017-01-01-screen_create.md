@@ -1,6 +1,6 @@
 ---
 category: Screen
-apiurl: '/api/v1/dashboard/screens'
+apiurl: '/api/v1/dashboard/screen'
 title: "Create Screen"
 type: 'POST'
 sample_doc: 'owl_screen.html'
@@ -26,5 +26,10 @@ layout: default
 
 ```Status: 200```
 ```
-{"id":1268,"pid":0,"name":"screen_test2"}
+{
+  "id":1268,
+  "pid":0,
+  "name":"screen_test2",
+  "creator": "root"
+}
 ```

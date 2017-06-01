@@ -165,6 +165,12 @@
     
   
     
+  
+    
+  
+    
+  
+    
     <li><a href='#/response-status-codes'>Response status codes</a></li>
     
   
@@ -360,6 +366,8 @@
         <li class='DELETE'><a href='#/screen_delete'>Delete Screen by id</a></li>
               
         <li class='POST'><a href='#/screen_create'>Create Screen</a></li>
+              
+        <li class='PUT'><a href='#/screen_clone'>Clone Screen & graphs of this Screen</a></li>
       
     
     </ul>
@@ -373,6 +381,8 @@
       
     
               
+        <li class='PUT'><a href='#/screen_graph_update'>Update Graph by id</a></li>
+              
         <li class='GET'><a href='#/screen_graph_get_by_id'>Get graph by id</a></li>
               
         <li class='DELETE'><a href='#/screen_graph_delete_by_id'>Delete graph by id</a></li>
@@ -380,6 +390,8 @@
         <li class='POST'><a href='#/screen_graph_create_with_new_screen'>Create a new screen and bind graph</a></li>
               
         <li class='POST'><a href='#/screen_graph_create'>Create a graph and bind to exist screen</a></li>
+              
+        <li class='POST'><a href='#/screen_graph_clone'>Clone Graph by ID</a></li>
       
     
     </ul>
@@ -1620,6 +1632,131 @@
     </section>
   </article>
 
+  <article class='PUT'>
+    <a name='/screen_graph_update' href='#/screen_graph_update'>
+			<h2><code><b>PUT</b> /api/v1/dashboard/graph/:id</code> Update Graph by id</h2></a>
+    <section class='body'>
+      <ul>
+  <li><a href="#/authentication">Session</a> Required</li>
+  <li>id
+    <ul>
+      <li>graph id</li>
+      <li>int64 [required] - in url path</li>
+    </ul>
+  </li>
+  <li>title
+    <ul>
+      <li>string</li>
+      <li>name of graph</li>
+    </ul>
+  </li>
+  <li>endpoints
+    <ul>
+      <li>[]string</li>
+    </ul>
+  </li>
+  <li>counters
+    <ul>
+      <li>[]string</li>
+    </ul>
+  </li>
+  <li>timespan
+    <ul>
+      <li>int64</li>
+      <li>时间区段 (秒)
+        <ul>
+          <li>default 3600</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>graph_type
+    <ul>
+      <li>string</li>
+      <li>视角: h (endpoint view), k (counter view), a (combo view)</li>
+      <li>accept values:
+        <ul>
+          <li>h</li>
+          <li>a</li>
+          <li>k</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>method
+    <ul>
+      <li>string</li>
+      <li>accept values:
+        <ul>
+          <li>‘sum’</li>
+          <li>’’ (空值)</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>position
+    <ul>
+      <li>int64</li>
+      <li>排序
+        <ul>
+          <li>预设值為0</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>falcon_tags
+    <ul>
+      <li>string</li>
+      <li>owl-light not this concept, keep empty. (open-falcon only)</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="request">Request</h3>
+
+<pre><code>/api/v1/dashboard/graph/4246
+{
+  "title": "testtt",
+  "screen_id": 955,
+  "endpoints": ["a1","a2"],
+  "counters": ["c1","c2"],
+  "timespan":9999,
+  "graph_type":"a",
+  "method": "sum",
+  "graph_type": "h",
+  "position": 22,
+  "falcon_tags": "a=1,b=2"
+}
+</code></pre>
+
+<h3 id="response">Response</h3>
+
+<p><code>Status: 200</code>
+<code>
+{
+  "graph_id": 4626,
+  "title": "testtt",
+  "screen_id": 955,
+  "endpoints": [
+    "a1",
+    "a2"
+  ],
+  "counters": [
+    "c1",
+    "c2"
+  ],
+  "timespan": 9999,
+  "graph_type": "a",
+  "method": "sum",
+  "position": 22,
+  "falcon_tags": "a=1,b=2"
+}
+</code></p>
+
+			<div> For more example, see the <a href=/doc/></a></div>
+    </section>
+  </article>
+
   <article class='GET'>
     <a name='/screen_graph_get_by_id' href='#/screen_graph_get_by_id'>
 			<h2><code><b>GET</b> /api/v1/dashboard/graph/:id</code> Get graph by id</h2></a>
@@ -1843,8 +1980,8 @@
       <li>string</li>
       <li>accept values:
         <ul>
-          <li>SUM  </li>
-          <li>空值</li>
+          <li>‘sum’  </li>
+          <li>’’ (空值)</li>
         </ul>
       </li>
     </ul>
@@ -1887,6 +2024,48 @@
 * return created graph id</p>
 
 			<div> For more example, see the <a href=/doc/owl_scren_graph.html>owl_scren_graph.html</a></div>
+    </section>
+  </article>
+
+  <article class='POST'>
+    <a name='/screen_graph_clone' href='#/screen_graph_clone'>
+			<h2><code><b>POST</b> /api/v1/dashboard/graph_clone</code> Clone Graph by ID</h2></a>
+    <section class='body'>
+      <ul>
+  <li><a href="#/authentication">Session</a> Required</li>
+  <li>id
+    <ul>
+      <li>graph id</li>
+      <li>int64 [required]</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="request">Request</h3>
+
+<pre><code>{"id": 4626}
+</code></pre>
+
+<h3 id="response">Response</h3>
+
+<p><code>Status: 200</code>
+<code>
+{
+  "id": 4993,
+  "title": "CPU_copy",
+  "hosts": "agent227|agent228|agent230",
+  "counters": "cpu.guest|cpu.idle|cpu.iowait|cpu.irq|cpu.nice|cpu.softirq|cpu.steal|cpu.switches|cpu.system|cpu.user",
+  "screen_id": 955,
+  "timespan": 3600,
+  "graph_type": "h",
+  "method": "sum",
+  "position": 4626,
+  "falcon_tags": "",
+  "creator": "root"
+}
+</code></p>
+
+			<div> For more example, see the <a href=/doc/></a></div>
     </section>
   </article>
 
@@ -2142,7 +2321,7 @@
 
   <article class='POST'>
     <a name='/screen_create' href='#/screen_create'>
-			<h2><code><b>POST</b> /api/v1/dashboard/screens</code> Create Screen</h2></a>
+			<h2><code><b>POST</b> /api/v1/dashboard/screen</code> Create Screen</h2></a>
     <section class='body'>
       <ul>
   <li><a href="#/authentication">Session</a> Required</li>
@@ -2170,10 +2349,54 @@
 
 <p><code>Status: 200</code>
 <code>
-{"id":1268,"pid":0,"name":"screen_test2"}
+{
+  "id":1268,
+  "pid":0,
+  "name":"screen_test2",
+  "creator": "root"
+}
 </code></p>
 
 			<div> For more example, see the <a href=/doc/owl_screen.html>owl_screen.html</a></div>
+    </section>
+  </article>
+
+  <article class='PUT'>
+    <a name='/screen_clone' href='#/screen_clone'>
+			<h2><code><b>PUT</b> /api/v1/dashboard/screen_clone</code> Clone Screen & graphs of this Screen</h2></a>
+    <section class='body'>
+      <ul>
+  <li><a href="#/authentication">Session</a> Required</li>
+  <li>id
+    <ul>
+      <li>screen_id [copy base on]</li>
+      <li>required</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="request">Request</h3>
+
+<pre><code>{"id": 965}
+</code></pre>
+
+<h3 id="response">Response</h3>
+
+<p><code>Status: 200</code>
+<code>
+{
+  "graph_names": [
+    "net.if.total.bytes",
+    "net.if.total.bytes"
+  ],
+  "id": 1276,
+  "pid": 0,
+  "name": "net.if.total.bytes_copy",
+  "creator": "root"
+}
+</code></p>
+
+			<div> For more example, see the <a href=/doc/></a></div>
     </section>
   </article>
 
