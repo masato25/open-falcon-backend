@@ -11,11 +11,17 @@ layout: default
 * id
   * graph id
   * int64 [required]
+* name
+  * string
+  * new name of copied screen
 
 ### Request
 
 ```
-{"id": 4626}
+{
+  "id": 4626,
+  "name": "CPU_copy"
+}
 ```
 
 ### Response

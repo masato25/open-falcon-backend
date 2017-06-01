@@ -11,11 +11,18 @@ layout: default
 * id
   * screen_id [copy base on]
   * required
+* name
+  * string
+  * new name of copied screen
+  * this should be unique name, if name exist will return error message
 
 ### Request
 
 ```
-{"id": 965}
+{
+  "id": 965,
+  "name": "newtestnamecopy"
+}
 ```
 
 ### Response
@@ -29,7 +36,7 @@ layout: default
   ],
   "id": 1276,
   "pid": 0,
-  "name": "net.if.total.bytes_copy",
+  "name": "newtestnamecopy",
   "creator": "root"
 }
 ```

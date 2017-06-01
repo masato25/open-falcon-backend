@@ -16,11 +16,21 @@
       <li>required</li>
     </ul>
   </li>
+  <li>name
+    <ul>
+      <li>string</li>
+      <li>new name of copied screen</li>
+      <li>this should be unique name, if name exist will return error message</li>
+    </ul>
+  </li>
 </ul>
 
 <h3 id="request">Request</h3>
 
-<pre><code>{"id": 965}
+<pre><code>{
+  "id": 965,
+  "name": "newtestnamecopy"
+}
 </code></pre>
 
 <h3 id="response">Response</h3>
@@ -34,7 +44,7 @@
   ],
   "id": 1276,
   "pid": 0,
-  "name": "net.if.total.bytes_copy",
+  "name": "newtestnamecopy",
   "creator": "root"
 }
 </code></p>
