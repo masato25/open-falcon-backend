@@ -12,10 +12,6 @@
         "enabled": false,
         "interval": 3600
     },
-    "gin_http": {
-        "enabled":  false,
-        "listen":   "%%GIN_HTTP%%"
-    },
     "graph": {
         "connTimeout": 1000,
         "callTimeout": 5000,

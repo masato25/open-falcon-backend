@@ -8,10 +8,7 @@ import (
 	"github.com/Cepave/open-falcon-backend/common/logruslog"
 	"github.com/Cepave/open-falcon-backend/common/vipercfg"
 
-	"github.com/Cepave/open-falcon-backend/modules/query/conf"
-	"github.com/Cepave/open-falcon-backend/modules/query/database"
 	"github.com/Cepave/open-falcon-backend/modules/query/g"
-	ginHttp "github.com/Cepave/open-falcon-backend/modules/query/gin_http"
 	"github.com/Cepave/open-falcon-backend/modules/query/graph"
 	"github.com/Cepave/open-falcon-backend/modules/query/grpc"
 	"github.com/Cepave/open-falcon-backend/modules/query/http"
@@ -41,13 +38,6 @@ func main() {
 	if gconf.Grpc.Enabled {
 		// grpc
 		go grpc.Start()
-	}
-
-	if gconf.GinHttp.Enabled {
-		//lambdaSetup
-		database.Init()
-		conf.ReadConf()
-		go ginHttp.StartWeb()
 	}
 
 	if gconf.Http.Enabled {

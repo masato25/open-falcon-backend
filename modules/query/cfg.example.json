@@ -1,7 +1,6 @@
 {
     "debug": false,
     "logLevel": "info",
-    "root_dir": "/home/query",
     "http": {
         "enabled":  true,
         "listen":   "0.0.0.0:9966"
@@ -25,10 +24,6 @@
     "speed": {
         "enabled": true,
         "time": "04:00"
-    },
-    "gin_http": {
-        "enabled":  true,
-        "listen":   "0.0.0.0:9967"
     },
     "graph": {
         "connTimeout": 1000,
