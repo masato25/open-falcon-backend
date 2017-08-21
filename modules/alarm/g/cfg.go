@@ -80,6 +80,7 @@ type ShortcutConfig struct {
 }
 
 type F2eApiEmailHelperConf struct {
+	Enable    bool   `json:"enable"`
 	URL       string `json:"url"`
 	TokenName string `json:"token_name"`
 	TokenKey  string `json:"token_key"`

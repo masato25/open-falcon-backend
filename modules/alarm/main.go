@@ -30,6 +30,9 @@ func main() {
 	}
 	vipercfg.Load()
 	g.ParseConfig(vipercfg.Config().GetString("config"))
+	if g.Config().F2eApiEmailHelper.Enable {
+		logruslog.SetLogLevelByString("debug")
+	}
 	logruslog.Init()
 	g.InitRedisConnPool()
 	model.InitDatabase()

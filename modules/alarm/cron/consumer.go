@@ -52,16 +52,20 @@ func forDemoSendEmail(event *model.Event) {
 		Subject: smsContent,
 		Content: mailContent,
 	}
-	Apitoken := fmt.Sprintf(`{"name": "%s", "sig": "%s"}`, f2econf.TokenName, f2econf.TokenKey)
-	rt := resty.New()
-	rt.SetHeader("Apitoken", Apitoken)
-	resp, err := rt.R().
-		SetBody(postTmp).
-		Post(f2econf.URL)
-	if err != nil {
-		log.Errorf("send mail got error with: %v", err.Error())
+	if f2econf.Enable {
+		Apitoken := fmt.Sprintf(`{"name": "%s", "sig": "%s"}`, f2econf.TokenName, f2econf.TokenKey)
+		rt := resty.New()
+		rt.SetHeader("Apitoken", Apitoken)
+		resp, err := rt.R().
+			SetBody(postTmp).
+			Post(f2econf.URL)
+		if err != nil {
+			log.Errorf("send mail got error with: %v", err.Error())
+		}
+		log.Debugf("send email got response: %v, postbody: %v", resp.String())
+	} else {
+		log.Debug("will not send email, because conf is sef disabled")
 	}
-	log.Debugf("send email got response: %v, postbody: %v", resp.String())
 }
 
 // 高优先级的不做报警合并
